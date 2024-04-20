@@ -10,7 +10,7 @@ void init_reponse(Rep *r,int x,int y)
   r->color.r=0;
   r->color.g=0;
   r->color.b=0;
-  r->police=TTF_OpenFont("police_enigme.ttf",10);//fontsize
+  r->police=TTF_OpenFont("reponses.ttf",20);//fontsize
   //qr->texte=TTF_RenderText_Solid(qr->police,qr->ch,qr->color);
   r->pos.x=x;//x;//x inserer la valeur apres
   r->pos.y=y;//y;//y inserer la valeur apres
@@ -23,18 +23,18 @@ void init_question(Quest *q,int x,int y)
   q->color.r=0;
   q->color.g=0;
   q->color.b=0;
-  q->police=TTF_OpenFont("police_enigme.ttf",10);//fontsize
+  q->police=TTF_OpenFont("conthrax.ttf",15);//fontsize
   //qr->texte=TTF_RenderText_Solid(qr->police,qr->ch,qr->color);
   q->pos1.x=x;//x;//x inserer la valeur apres
   q->pos1.y=y;//y;//y inserer la valeur apres
-  q->pos2.x=x+20;//x;//x inserer la valeur apres
-  q->pos2.y=y+20;//y;//y inserer la valeur apres
+  q->pos2.x=x+30;//x;//x inserer la valeur apres
+  q->pos2.y=y+30;//y;//y inserer la valeur apres
   
   printf("function init question\n");
 }
 void init_enigme(Enigme *e)
 { 
-   e->back_enigme=IMG_Load("back_enig1.png");
+   e->back_enigme=IMG_Load("back_Enigme.png");
    if(e->back_enigme==NULL)
       {
           printf("unable to load background enigme %s \n",SDL_GetError());
@@ -58,10 +58,11 @@ void init_enigme(Enigme *e)
    e->anim.possprite.y=0;
    e->anim.possprite.h=96;
    e->anim.possprite.w=96;
-   init_question(&(e->question),205,210);
-   init_reponse(&(e->rep1),90,500);
-   init_reponse(&(e->rep2),200,500);
-   init_reponse(&(e->rep3),90,600);
+   init_question(&(e->question),185,180);
+   init_reponse(&(e->rep1),270,445);
+   init_reponse(&(e->rep2),815,445);
+   init_reponse(&(e->rep3),180,630);
+   init_reponse(&(e->rep4),815,630);
    e->rep_corr[0]='\0';
    e->etat=0;//non encore resolu
    e->msg_res[0]=IMG_Load("resultat_correct.png");
@@ -115,6 +116,8 @@ void generer_enigme(Enigme *e, char *les_enigmes)
             token = strtok(NULL, "/");
             strcpy((e->rep3).ch,token);
             token = strtok(NULL, "/");
+            strcpy((e->rep4).ch,token);
+            token = strtok(NULL, "/");
             strcpy(e->rep_corr,token);
             // Affichage des parties de la chaîne
             printf("Question : %s\n", (e->question).ch);
@@ -122,6 +125,7 @@ void generer_enigme(Enigme *e, char *les_enigmes)
             printf("+");
             printf("Réponse 2 : %s\n", (e->rep2).ch);
             printf("Réponse 3 : %s\n", (e->rep3).ch);
+            printf("Réponse 4 : %s\n", (e->rep4).ch);
             printf("Réponse correcte : %s", e->rep_corr);
             printf("+");
             printf("num_ligne:%d\n",num_ligne);
@@ -137,6 +141,7 @@ void generer_enigme(Enigme *e, char *les_enigmes)
             e->rep1.texte=TTF_RenderText_Solid(e->rep1.police,(e->rep1).ch,e->rep1.color);
             e->rep2.texte=TTF_RenderText_Solid(e->rep2.police,(e->rep2).ch,e->rep2.color);
             e->rep3.texte=TTF_RenderText_Solid(e->rep3.police,(e->rep3).ch,e->rep3.color);
+            e->rep4.texte=TTF_RenderText_Solid(e->rep4.police,(e->rep4).ch,e->rep4.color);
             //e->question.texte=TTF_RenderText_Solid(e->question.police,(e->question).ch,e->question.color);
  
         }
@@ -166,6 +171,7 @@ void animerEnigme(Enigme *e, SDL_Surface *screen)
              SDL_BlitSurface(e->rep1.texte,NULL,screen,&e->rep1.pos);
              SDL_BlitSurface(e->rep2.texte,NULL,screen,&e->rep2.pos);
              SDL_BlitSurface(e->rep3.texte,NULL,screen,&e->rep3.pos);
+             SDL_BlitSurface(e->rep4.texte,NULL,screen,&e->rep4.pos);
              SDL_Flip(screen);
              SDL_BlitSurface(e->anim.sprite,&e->anim.possprite,screen,&e->anim.posscreen);
              SDL_UpdateRect(screen, e->anim.posscreen.x, e->anim.posscreen.y,e->anim.possprite.w,e->anim.possprite.h);
@@ -195,6 +201,7 @@ void afficherEnigme(Enigme *e, SDL_Surface *screen)
         SDL_BlitSurface(e->rep1.texte,NULL,screen,&e->rep1.pos);
         SDL_BlitSurface(e->rep2.texte,NULL,screen,&e->rep2.pos);
         SDL_BlitSurface(e->rep3.texte,NULL,screen,&e->rep3.pos);
+        SDL_BlitSurface(e->rep4.texte,NULL,screen,&e->rep4.pos);
         animerEnigme(e,screen);
         //SDL_BlitSurface(e->question.texte,NULL,screen,&e->question.pos);
         printf("iam here\n");
@@ -258,12 +265,14 @@ void libererenigme(Enigme *e)
    SDL_FreeSurface(e->rep1.texte);
    SDL_FreeSurface(e->rep2.texte);
    SDL_FreeSurface(e->rep3.texte);
+   SDL_FreeSurface(e->rep4.texte);
    SDL_FreeSurface(e->msg_res[0]);
    SDL_FreeSurface(e->msg_res[1]);
    TTF_CloseFont(e->question.police);
    TTF_CloseFont(e->rep1.police);
    TTF_CloseFont(e->rep2.police);
    TTF_CloseFont(e->rep3.police);
+   TTF_CloseFont(e->rep4.police);
    printf("fonction liberer here\n");
 }
   

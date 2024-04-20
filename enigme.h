@@ -43,6 +43,7 @@ typedef struct
   Rep rep1;
   Rep rep2;
   Rep rep3;
+  Rep rep4;
   char rep_corr[TAILLE_MAX];
   int etat;
   SDL_Surface *msg_res[2];
