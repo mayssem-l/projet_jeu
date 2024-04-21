@@ -65,12 +65,12 @@ void init_enigme(Enigme *e)
    init_reponse(&(e->rep4),815,630);
    e->rep_corr[0]='\0';
    e->etat=0;//non encore resolu
-   e->msg_res[0]=IMG_Load("resultat_correct.png");
+   e->msg_res[0]=IMG_Load("2 attempts.png");
    if(e->msg_res[0]==NULL)
              {printf("unable to load image resultat correct %s \n",SDL_GetError());
              return;
              }
-   e->msg_res[1]=IMG_Load("resultat_incorrect.png");
+   e->msg_res[1]=IMG_Load("1 attempt.png");
    if(e->msg_res[1]==NULL)
              {printf("unable to load image resultat incorrect %s \n",SDL_GetError());
              return;

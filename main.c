@@ -130,7 +130,7 @@ int nbrImage=0;
 ///////////////////tache_enigme///////////////////////
 
 init_enigme(&eg);
-image=IMG_Load("resultat_incorrect.png");
+image=IMG_Load("correct_answer.png");
 if(image==NULL)
      {printf("unable to load image resultat incorrect %s \n",SDL_GetError());
      }
@@ -139,7 +139,7 @@ posImage.y=0;
 posImage.w=image-> w;
 posImage.h=image-> h;	
 
-image1=IMG_Load("resultat_correct.png");
+image1=IMG_Load("gameover.png");
 if(image1==NULL)
      {printf("unable to load image resultat incorrect %s \n",SDL_GetError());
      }
