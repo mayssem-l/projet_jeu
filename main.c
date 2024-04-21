@@ -1,117 +1,73 @@
+#include "background.h"
+#include <stdio.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_mixer.h>
 #include <SDL/SDL_ttf.h>
-#include "enigme.h"
-int main(int argc, char** argv)
-{
-  SDL_Surface *screen;
-  Enigme e;
-  int quitter=1;
-  SDL_Event event;
-  char reponse[TAILLE_MAX]="";
-//**************Initialisation
-//initialisation des sous systemes de SDL
-  SDL_Init(SDL_INIT_EVERYTHING);
-  Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT,2,1024);
-  TTF_Init();
+#include <string.h>
 
-/* initialisation de SDL_Video */
-   if ((SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_TIMER)!=0) || (TTF_Init()!=0) || Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT,2,1024)!=0)
-      {
-         printf("Echec d'initialisation de SDL : %s\n", SDL_GetError());
-	 return 1;
-	
-      }
-	
-   else
-         printf("Bonjour le monde, SDL est initialisé avec succès.\n");
-//création fenetre
-  screen = SDL_SetVideoMode(1200, 800, 32,SDL_HWSURFACE | SDL_DOUBLEBUF);
-	if ( screen == NULL )
+int main(){
+Mix_Music *musique;
+int quitter=1, play=0;
+SDL_Surface *ecran;
+SDL_Event event;
+background bg;
+
+
+TTF_Init();
+SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) ;
+Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,2,1024);
+
+if(SDL_Init(SDL_INIT_VIDEO) < 0){
+printf("ECHEC D'INITIALISATION DE SDL!! : %s\n",SDL_GetError());}
+else{
+printf("SDL est initialisé avec succès.\n");}
+
+ecran=SDL_SetVideoMode(700, 500,  32,SDL_HWSURFACE | SDL_DOUBLEBUF);
+
+if ( ecran == NULL )
 	{
-		fprintf(stderr, "Echec de creation de la fenetre de 300*300: %s.\n", SDL_GetError());
-		return 1;
+		fprintf(stderr, "Echec de creation de la fenetre de 560*360: %s.\n", SDL_GetError());
 	}
-//initialison enigme
-init_enigme(&e);
-while(quitter)
-{
-  if(e.etat==1)
-    { 
-       printf("mabrouk!!!!!!");
-       //quitter=0;
-       //blit
-       //delay
-       break;
-    }
-  if(e.etat==-1)
-    {
-       printf("Game over");
-       //quitter=0;
-       break;
-    }
-  if(e.etat==0)
-    {
-       if(e.num_tent==3)
-         {
- 		printf(" mizelk a syed 1");
-         }
-       if(e.num_tent==2)
-         {
-		printf(" mizelk a syed 2");
-         }
-       if(e.num_tent==1)
-         {
-		printf(" mizelk a syed 3");
-         }
-    }
-  generer_enigme(&e,"les_enigmes.txt");
-  afficherEnigme(&e,screen);
-  printf("reponse: %s\n",reponse);
+else {printf("fenetre cree avec success. \n");}
 
-  
-  SDL_Flip(screen);
-  //SDL_PollEvent(&event);
-  while(SDL_PollEvent(&event))
-  {
-  switch (event.type)
-         { 
-        // exit if the window is closed
-		case SDL_QUIT:
-                  {quitter = 0;
-                   //SDL_Quit();
-        	break;}
-                case SDL_KEYDOWN:
-                     {
-                       
-                       if(event.key.keysym.sym==SDLK_a)
-                             {
-                                strcpy(reponse,e.rep1.ch);
-                                //resol_enigme(&e,reponse);
-                              }
-                       if(event.key.keysym.sym==SDLK_b)
-                              {
-                                  strcpy(reponse,e.rep2.ch);
-                              }
-                       if(event.key.keysym.sym==SDLK_c)
-                              {
-                                 strcpy(reponse,e.rep3.ch);
-                              }
-                       resol_enigme(&e,reponse);  
-                      }
-                     
-         }
-   
-   SDL_Flip(screen);
-  }
+SDL_BlitSurface(bg.bg,&bg.posanim,ecran,&bg.poscam1);
 
+initBack(&bg,ecran,musique);
+initAnim(&bg,ecran);
+
+while(quitter){
+	
+	afficherBack(bg,ecran);
+	//nimerBack(&bg,ecran);
+	SDL_PollEvent(&event);
+
+switch(event.type){
+	case SDL_QUIT:
+		quitter=0;
+	break;
+	case SDL_KEYDOWN:
+		if(event.key.keysym.sym == SDLK_ESCAPE){quitter = 0;}
+		if(event.key.keysym.sym == SDLK_RIGHT){bg.direction=0; bg.num=1; }
+		if(event.key.keysym.sym == SDLK_LEFT){bg.direction=1; bg.num=1;}
+		if(event.key.keysym.sym == SDLK_UP){bg.direction=2; bg.num=1;}
+		if(event.key.keysym.sym == SDLK_DOWN){bg.direction=3; bg.num=1;}
+		if(event.key.keysym.sym == SDLK_r){bg.direction=0; bg.num=2; }
+		if(event.key.keysym.sym == SDLK_u){bg.direction=1; bg.num=2; }
+		if(event.key.keysym.sym == SDLK_d){bg.direction=2; bg.num=2; }
+		if(event.key.keysym.sym == SDLK_s){bg.direction=3; bg.num=2; }
+	break;
+	
 }
-//liberation
-libererenigme(&e);
+
+scrolling(&bg,1,ecran);
+
+SDL_Flip(ecran);
+}
+
+SDL_FreeSurface(bg.bg);
+Mix_FreeMusic(musique);
 Mix_CloseAudio();
-TTF_Quit();
 SDL_Quit();
-printf("Iam out"); 
 return 0;
 }
