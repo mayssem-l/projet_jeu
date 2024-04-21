@@ -57,7 +57,7 @@ void init_enigme(Enigme *e);
 void generer_enigme(Enigme *e, char *enigmes);
 void afficherEnigme(Enigme *e, SDL_Surface *screen);
 void animerEnigme(Enigme *e, SDL_Surface *screen);
-void resol_enigme(Enigme *e, char *reponse);
+void resol_enigme(Enigme *e, char *reponse, SDL_Surface *screen);
 void libererenigme(Enigme *e);
 #endif
 

@@ -218,8 +218,16 @@ void afficherEnigme(Enigme *e, SDL_Surface *screen)
    //SDL_Quit();
    printf("fonction afficher here\n");
 }
-void resol_enigme(Enigme *e, char *reponse)
+void resol_enigme(Enigme *e, char *reponse, SDL_Surface *screen)
 { 
+   /*SDL_Surface *image;
+   image=IMG_Load("resultat_correct.png");*/
+   SDL_Rect pos;
+   pos.x=0;
+   pos.y=0;
+   pos.h=e->msg_res[1]->h;
+   pos.w=e->msg_res[1]->w;
+   printf("reslo_enigme here\n");
    char caractere='\n';
    int comp;
    /*if(e->num_tent>4)
@@ -250,6 +258,10 @@ void resol_enigme(Enigme *e, char *reponse)
            else
            {
             e->etat=0;
+            SDL_BlitSurface(e->msg_res[e->num_tent-1],NULL,screen,&pos);
+            SDL_Flip(screen);
+            SDL_Delay(1000);
+            printf("num_tent:%d\n",e->num_tent);
             e->num_tent++;
             printf("non reussi\n");
            }

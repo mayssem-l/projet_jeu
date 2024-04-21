@@ -55,8 +55,11 @@ int main(int argc, char** argv)
   Enigme eg;
   char reponse[TAILLE_MAX]="";
   int compt=1;
-
-
+  SDL_Rect posImage;
+  SDL_Rect posImage1;
+  SDL_Surface *image;
+  SDL_Surface *image1;
+  
 //Initialisation
 //initialisation des sous systemes de SDL
   SDL_Init(SDL_INIT_EVERYTHING);
@@ -127,6 +130,23 @@ int nbrImage=0;
 ///////////////////tache_enigme///////////////////////
 
 init_enigme(&eg);
+image=IMG_Load("resultat_incorrect.png");
+if(image==NULL)
+     {printf("unable to load image resultat incorrect %s \n",SDL_GetError());
+     }
+posImage.x=0;
+posImage.y=0;
+posImage.w=image-> w;
+posImage.h=image-> h;	
+
+image1=IMG_Load("resultat_correct.png");
+if(image1==NULL)
+     {printf("unable to load image resultat incorrect %s \n",SDL_GetError());
+     }
+posImage1.x=0;
+posImage1.y=0;
+posImage1.w=image1-> w;
+posImage1.h=image1-> h;
 
 /////////////////////////////////////////////
 while(quitter)
@@ -146,6 +166,7 @@ while(quitter)
    }
   else if(niveau==1){ 
         printf("niveau 1\n");
+        //SDL_Delay(20);
 	/*/afficher_background(ecran,back_play,0);
 	afficher_button(ecran,but_back);*/
         SDL_BlitSurface(background,NULL,ecran,&background_pos);
@@ -168,6 +189,8 @@ while(quitter)
    	SDL_BlitSurface(sorry,NULL,ecran,&pos_sorry); 
 	}
 	SDL_Delay(10);
+        update_entity(&e);
+        update_ennemie (&en,&p);
         //SDL_Flip(ecran);
   }
   else if(niveau==2){
@@ -183,21 +206,31 @@ while(quitter)
   }
   else if(niveau==3)
   {
+           generer_enigme(&eg,"les_enigmes.txt");
+           afficherEnigme(&eg,ecran);
+           printf("reponse: %s\n",reponse);
                        if(eg.etat==1)
                          { 
                            printf("mabrouk!!!!!!");
+                           SDL_BlitSurface(image,NULL,ecran,&posImage);
+                           SDL_Flip(ecran);
+                           SDL_Delay(1000);
                            //quitter=0;
                            //blit
                            //delay
                            niveau=1;
+                           //SDL_Delay(100);
                            //quitter=1;
                            //break;
                           }
                        if(eg.etat==-1)
                          {
                            printf("Game over");
+                           SDL_BlitSurface(image1,NULL,ecran,&posImage);
+                           SDL_Flip(ecran);
+                           SDL_Delay(1000);
                            //quitter=0;
-                           //niveau=0;
+                           niveau=0;
                            //break;
                          }
                        if(eg.etat==0)
@@ -212,14 +245,9 @@ while(quitter)
                             }
                           if(eg.num_tent==1)
                             {
-		             printf(" mizelk a syed 3");
+                             printf(" mizelk a syed 3");
                             }
                          }
-  
-                    generer_enigme(&eg,"les_enigmes.txt");
-                    afficherEnigme(&eg,ecran);
-                    printf("reponse: %s\n",reponse);
-                    
 
   }
   SDL_Flip(ecran);
@@ -381,19 +409,19 @@ while(quitter)
                                 strcpy(reponse,eg.rep1.ch);
                                 //resol_enigme(&e,reponse);
                               }
-                       if(event.key.keysym.sym==SDLK_b)
+                       else if(event.key.keysym.sym==SDLK_b)
                               {
                                   strcpy(reponse,eg.rep2.ch);
                               }
-                       if(event.key.keysym.sym==SDLK_c)
+                       else if(event.key.keysym.sym==SDLK_c)
                               {
                                  strcpy(reponse,eg.rep3.ch);
                               }
-                       if(event.key.keysym.sym==SDLK_d)
+                       else if(event.key.keysym.sym==SDLK_d)
                               {
                                  strcpy(reponse,eg.rep4.ch);
                               }
-                       resol_enigme(&eg,reponse);
+                       resol_enigme(&eg,reponse,ecran);
                  break;  
                          
                 }
@@ -402,8 +430,8 @@ while(quitter)
   }
 
 }
-  update_entity(&e);
-  update_ennemie (&en,&p);
+  /*update_entity(&e);
+  update_ennemie (&en,&p);*/
 printf("quitter: %d\n",quitter);
 }
 ////////////////////liberer_entite/////////////////
